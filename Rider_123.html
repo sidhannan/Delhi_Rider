@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 7.6.4.1 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { background: transparent }
+		pre.western { font-family: "Liberation Mono", monospace; font-size: 10pt }
+		pre.cjk { font-family: "NSimSun", monospace; font-size: 10pt }
+		pre.ctl { font-family: "Liberation Mono", monospace; font-size: 10pt }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre class="western">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Location Verification&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Checking Your Location...&lt;/h1&gt;
+  &lt;script&gt;
+    // Allowed location coordinates
+    const allowedLatitude = 28.5378607;
+    const allowedLongitude = 77.1979792;
+    const allowedRadius = 20; // in meters
+
+    // Function to calculate distance between two coordinates
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3; // Earth radius in meters
+      const φ1 = (lat1 * Math.PI) / 180;
+      const φ2 = (lat2 * Math.PI) / 180;
+      const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+      const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+      const a =
+        Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    }
+
+    // Check user's location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) =&gt; {
+          const userLatitude = position.coords.latitude;
+          const userLongitude = position.coords.longitude;
+
+          const distance = calculateDistance(
+            userLatitude,
+            userLongitude,
+            allowedLatitude,
+            allowedLongitude
+          );
+
+          if (distance &lt;= allowedRadius) {
+            // Redirect to Google Site
+            window.location.href = &quot;https://sites.google.com/farmako.in/delhi-rider-attendance/home&quot;;
+          } else {
+            document.body.innerHTML = &quot;&lt;h1&gt;Access Denied: Outside the Allowed Location&lt;/h1&gt;&quot;;
+          }
+        },
+        (error) =&gt; {
+          document.body.innerHTML = &quot;&lt;h1&gt;Location Access Denied&lt;/h1&gt;&quot;;
+        }
+      );
+    } else {
+      document.body.innerHTML = &quot;&lt;h1&gt;Geolocation Not Supported&lt;/h1&gt;&quot;;
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
